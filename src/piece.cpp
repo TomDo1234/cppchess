@@ -1,6 +1,7 @@
 #include "enums.h"
 #include "piece.h"
 #include <vector>
+#include <cstdlib>
 
 // Constructor implementation/definition
 Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_moved) {
@@ -21,21 +22,36 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
         }
     }
 
-    // let position = match position {
-    //     None => return Err(ChessEngineError {message: "Piece not in board".to_owned()}),
-    //     Some(index) => index
-    // };
 
-    // let moves = match self.piece_type {
-    //     PieceType::Pawn => {
-    //         let direction: i8 = match self.color {
-    //             Color::White => -1,
-    //             Color::Black => 1
-    //         };
+    PieceType type = this->piece_type;
+    std::vector<int> moves = {};
 
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         let new_position_forward_one = position as i8 + 8 * direction;
-    //         let new_position_forward_two = position as i8 + 16 * direction;
+    if (type == PieceType::Pawn) {
+        int direction = this->color == Color::White ? -1 : 1;
+        int new_position_forward_one = position + 8 * direction;
+        int new_position_forward_two = position + 16 * direction;
+
+        if (new_position_forward_one >= 0 && new_position_forward_one <= 63 && &board[new_position_forward_one] == nullptr) {
+            moves.push_back(8 * direction);
+            if (!this->has_moved && new_position_forward_two >= 0 && new_position_forward_two <= 63 && &board[new_position_forward_two] == nullptr) {
+                moves.push_back(16 * direction);
+            }
+        }
+        int new_position = position + 9 * direction;
+        if (std::abs((new_position / 8) - (position / 8)) == 1) {
+            if (board[new_position].color != this->color) {
+                moves.push_back(9 * direction);
+            }
+        }
+        new_position = position + 7 * direction;
+        if (std::abs((new_position / 8) - (position / 8)) == 1) {
+            if (board[new_position].color != this->color) {
+                moves.push_back(7 * direction);
+            }
+        }
+        return moves;
+    }
+
     //         if new_position_forward_one >= 0 && new_position_forward_one <= 63 && board[new_position_forward_one as usize] == None {
     //             available_moves.push(8 * direction);
     //             if !self.has_moved && new_position_forward_two >= 0 && new_position_forward_two <= 63 && board[new_position_forward_two as usize] == None {
