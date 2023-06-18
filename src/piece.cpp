@@ -51,78 +51,51 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
         }
         return moves;
     }
-
-    //         if new_position_forward_one >= 0 && new_position_forward_one <= 63 && board[new_position_forward_one as usize] == None {
-    //             available_moves.push(8 * direction);
-    //             if !self.has_moved && new_position_forward_two >= 0 && new_position_forward_two <= 63 && board[new_position_forward_two as usize] == None {
-    //                 available_moves.push(16 * direction);
-    //             }
-    //         }
-    //         let new_position = position as i8 + 9 * direction;
-    //         if ((new_position / 8) - (position / 8) as i8).abs() == 1 {
-    //             if let Some(piece) = &board[new_position as usize] {
-    //                 if piece.color != self.color {
-    //                     available_moves.push(9 * direction);
-    //                 }
-    //             }
-    //         }
-    //         let new_position = position as i8 + 7 * direction;
-    //         if ((new_position / 8) - (position / 8) as i8).abs() == 1 {
-    //             if let Some(piece) = &board[new_position as usize] {
-    //                 if piece.color != self.color {
-    //                     available_moves.push(7 * direction);
-    //                 }
-    //             }
-    //         }
-    //         available_moves
-    //     },
-    //     PieceType::Knight => {
-    //         let moves: Vec<i8> = vec![-17, -15, -10, -6, 6, 10, 15, 17];
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         for movement in moves {
-    //             let new_position = position as i8 + movement;
-    //             if new_position < 0 || new_position > 63 {
-    //                 continue;
-    //             }
-    //             else if (movement == 10 || movement == 6 || movement == -10 || movement == -6) && (new_position % 8 - position as i8 % 8).abs() != 2 {
-    //                 continue;
-    //             }
-    //             else if (movement == 17 || movement == 15 || movement == -15 || movement == -17) && (new_position % 8 - position as i8 % 8).abs() != 1 {
-    //                 continue;
-    //             }
-    //             if let Some(piece) = &board[new_position as usize] {
-    //                 if piece.color == self.color {
-    //                     continue;
-    //                 }
-    //             }
-    //             available_moves.push(movement);
-    //         }
-    //         available_moves
-    //     },
-    //     PieceType::Bishop => {
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         let directions: [i8;4] = [-9,9,7,-7];
-    //         for direction in directions {
-    //             for i in 1..8 {
-    //                 let movement: i8 = direction * i;
-    //                 let new_position = position as i8 + movement;
-    //                 if new_position > 63 || new_position < 0 {
-    //                     break;
-    //                 }
-    //                 if (((position as i8 + movement) / 8) - (position / 8) as i8).abs() != i {
-    //                     break;
-    //                 }
-    //                 if let Some(piece) = &board[new_position as usize] {
-    //                     if piece.color != self.color {
-    //                         available_moves.push(movement);
-    //                     }
-    //                     break;
-    //                 }
-    //                 available_moves.push(movement);
-    //             }
-    //         }
-    //         available_moves
-    //     },
+    else if (type == PieceType::Knight) {
+        moves = {-17, -15, -10, -6, 6, 10, 15, 17};
+        std::vector<int> available_moves = {};
+        for (int movement: moves) {
+            int new_position = position + movement;
+            if (new_position < 0 || new_position > 63) {
+                continue;
+            }
+            else if ((movement == 10 || movement == 6 || movement == -10 || movement == -6) && std::abs(new_position % 8 - position % 8) != 2) {
+                continue;
+            }
+            else if ((movement == 17 || movement == 15 || movement == -15 || movement == -17) && std::abs(new_position % 8 - position % 8) != 1) {
+                continue;
+            }
+            if (board[new_position].color == this->color) {
+                continue;
+            }
+            available_moves.push_back(movement);
+        }
+        return available_moves;
+    }
+    else if (type == PieceType::Bishop) {
+        std::vector<int> available_moves = {};
+        int directions[4] = {-9,9,7,-7};
+        for (int direction: directions) {
+            for (int i = 0; i < 8; i++) {
+                int movement = direction * i;
+                int new_position = position + movement;
+                if (new_position > 63 || new_position < 0) {
+                    break;
+                }
+                if (std::abs(((position + movement) / 8) - (position / 8)) != i) {
+                    break;
+                }
+                if (&board[new_position] != nullptr) {
+                    if (board[new_position].color != this->color) {
+                        available_moves.push_back(movement);
+                    }
+                    break;
+                }
+                available_moves.push_back(movement);
+            }
+        }
+        return available_moves;
+    }
     //     PieceType::Rook => {
     //         let mut available_moves: Vec<i8> = vec![];
     //         let directions: [i8;4] = [-1,1,8,-8];
