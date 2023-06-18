@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdlib>
 #include <optional>
+#include <tuple>
 
 // Constructor implementation/definition
 Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_moved) {
@@ -187,4 +188,8 @@ std::vector<int> Piece::get_moves(std::optional<Piece> board[64]) {
     }
 
     return moves;
+}
+
+std::tuple<size_t,unsigned int,std::optional<Piece>[64]> Piece::do_move(std::optional<Piece> board[64],int movement) {
+
 }
