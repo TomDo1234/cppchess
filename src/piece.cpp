@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <optional>
 #include <tuple>
+#include <array>
 
 // Constructor implementation/definition
 Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_moved) {
@@ -190,6 +191,48 @@ std::vector<int> Piece::get_moves(std::optional<Piece> board[64]) {
     return moves;
 }
 
-std::tuple<size_t,unsigned int,std::optional<Piece>[64]> Piece::do_move(std::optional<Piece> board[64],int movement) {
+std::tuple<int,unsigned int,std::array<std::optional<Piece>,64>> Piece::do_move(std::array<std::optional<Piece>,64> board,int movement) {
+    int position = -1; //remains -1 if piece is not found;
 
+    // Find the index of the object by comparing memory addresses
+    for (size_t i = 0; i < 64; ++i) {
+        if (board[i].has_value() && &*board[i] == this) {
+            position = i;
+            break;
+        }
+    }
+
+    int new_position = position + movement;
+
+    std::optional<Piece> new_position_data = board[new_position];
+
+    unsigned int piece_there_value = new_position_data.has_value() ? (*new_position_data).value : 0;
+
+    std::array<std::optional<Piece>,64> new_board = board;
+    new_board[position].reset();
+
+    Piece moved_piece = *this;
+
+    if (moved_piece.piece_type == PieceType::Pawn || moved_piece.piece_type == PieceType::King || moved_piece.piece_type == PieceType::Rook) {
+        moved_piece.has_moved = true;
+    }
+
+    new_board[new_position] = moved_piece;
+
+    if (this->piece_type == PieceType::King) {
+        if (movement == 2) {
+            new_board[position + 1] = new_board[position + 3];
+            new_board[position + 3].reset();
+        }
+        else if (movement == -2) {
+            new_board[position - 1] = new_board[position - 4];
+            new_board[position - 4].reset();
+        }
+    }
+    else if (this->piece_type == PieceType::Pawn && (new_position / 8 == 0 || new_position / 8 == 7)) {
+        piece_there_value += 8;
+        new_board[new_position] = this->color == Color::White ? WHITE_QUEEN : BLACK_QUEEN;
+    }
+
+    return std::make_tuple(position,piece_there_value,new_board);
 }
