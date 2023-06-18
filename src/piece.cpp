@@ -2,6 +2,7 @@
 #include "piece.h"
 #include <vector>
 #include <cstdlib>
+#include <optional>
 
 // Constructor implementation/definition
 Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_moved) {
@@ -11,12 +12,12 @@ Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_mov
     this->has_moved = has_moved;
 }
 
-std::vector<int> Piece::get_moves(Piece board[64]) {
+std::vector<int> Piece::get_moves(std::optional<Piece> board[64]) {
     int position = -1; //remains -1 if piece is not found;
 
     // Find the index of the object by comparing memory addresses
     for (size_t i = 0; i < 64; ++i) {
-        if (&board[i] == this) {
+        if (board[i].has_value() && &*board[i] == this) {
             position = i;
             break;
         }
@@ -39,13 +40,13 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
         }
         int new_position = position + 9 * direction;
         if (std::abs((new_position / 8) - (position / 8)) == 1) {
-            if (board[new_position].color != this->color) {
+            if ((*board[new_position]).color != this->color) {
                 moves.push_back(9 * direction);
             }
         }
         new_position = position + 7 * direction;
         if (std::abs((new_position / 8) - (position / 8)) == 1) {
-            if (board[new_position].color != this->color) {
+            if ((*board[new_position]).color != this->color) {
                 moves.push_back(7 * direction);
             }
         }
@@ -65,7 +66,7 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
             else if ((movement == 17 || movement == 15 || movement == -15 || movement == -17) && std::abs(new_position % 8 - position % 8) != 1) {
                 continue;
             }
-            if (board[new_position].color == this->color) {
+            if ((*board[new_position]).color == this->color) {
                 continue;
             }
             available_moves.push_back(movement);
@@ -85,8 +86,8 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
                 if (std::abs(((position + movement) / 8) - (position / 8)) != i) {
                     break;
                 }
-                if (&board[new_position] != nullptr) {
-                    if (board[new_position].color != this->color) {
+                if (!board[new_position].has_value()) {
+                    if ((*board[new_position]).color != this->color) {
                         available_moves.push_back(movement);
                     }
                     break;
@@ -96,94 +97,94 @@ std::vector<int> Piece::get_moves(Piece board[64]) {
         }
         return available_moves;
     }
-    //     PieceType::Rook => {
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         let directions: [i8;4] = [-1,1,8,-8];
-    //         for direction in directions {
-    //             for i in 1..8 {
-    //                 let movement: i8 = direction * i;
-    //                 let new_position = position as i8 + movement;
-    //                 if new_position > 63 || new_position < 0 {
-    //                     break;
-    //                 }
-    //                 if direction.abs() == 1 && (new_position / 8) != (position / 8) as i8 {
-    //                     break;
-    //                 }
-    //                 if let Some(piece) = &board[new_position as usize] {
-    //                     if piece.color != self.color {
-    //                         available_moves.push(movement);
-    //                     }
-    //                     break;
-    //                 }
-    //                 available_moves.push(movement);
-    //             }
-    //         }
-    //         available_moves
-    //     },
-    //     PieceType::Queen => {
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         let directions: [i8;8] = [-1,1,8,-8,-9,9,7,-7];
-    //         for direction in directions {
-    //             for i in 1..8 {
-    //                 let movement: i8 = direction * i;
-    //                 let new_position = position as i8 + movement;
-    //                 if new_position > 63 || new_position < 0 {
-    //                     break;
-    //                 }
-    //                 if direction.abs() == 1 && (new_position / 8) != (position / 8) as i8 {
-    //                     break;
-    //                 }
-    //                 else if direction.abs() != 1  && ((new_position / 8) - (position / 8) as i8).abs() != i {
-    //                     break;
-    //                 }
-    //                 if let Some(piece) = &board[new_position as usize] {
-    //                     if piece.color != self.color {
-    //                         available_moves.push(movement);
-    //                     }
-    //                     break;
-    //                 }
-    //                 available_moves.push(movement);
-    //             }
-    //         }
-    //         available_moves
-    //     },
-    //     PieceType::King => {
-    //         let mut available_moves: Vec<i8> = vec![];
-    //         let directions: [i8;8] = [-1,1,8,-8,-9,9,7,-7];
+    else if (type == PieceType::Rook) {
+        std::vector<int> available_moves = {};
+        int directions[4] = {-1,1,8,-8};
+        for (int direction: directions) {
+            for (int i = 0; i < 8; i++) {
+                int movement = direction * i;
+                int new_position = position + movement;
+                if (new_position > 63 || new_position < 0) {
+                    break;
+                }
+                if (std::abs(direction) == 1 && (new_position / 8) != (position / 8)) {
+                    break;
+                }
+                if (!board[new_position].has_value()) {
+                    if ((*board[new_position]).color != this->color) {
+                        available_moves.push_back(movement);
+                    }
+                    break;
+                }
+                available_moves.push_back(movement);
+            }
+        }
+        return available_moves;
+    }
+    else if (PieceType::Queen == type) {
+        std::vector<int> available_moves = {};
+        int directions[8] = {-1,1,8,-8,-9,9,7,-7};
+        for (int direction: directions) {
+            for (int i = 0; i < 8; i++) {
+                int movement = direction * i;
+                int new_position = position + movement;
+                if (new_position > 63 || new_position < 0) {
+                    break;
+                }
+                if (std::abs(direction) == 1 && (new_position / 8) != (position / 8)) {
+                    break;
+                }
+                else if (std::abs(direction) != 1  && std::abs((new_position / 8) - (position / 8)) != i) {
+                    break;
+                }
+                if (!board[new_position].has_value()) {
+                    if ((*board[new_position]).color != this->color) {
+                        available_moves.push_back(movement);
+                    }
+                    break;
+                }
+                available_moves.push_back(movement);
+            }
+        }
+        return available_moves;
+    }
+    else if (PieceType::King == type) {
+        std::vector<int> available_moves = {};
+        int directions[8] = {-1,1,8,-8,-9,9,7,-7};
 
-    //         //Normal move logic
-    //         for movement in directions {
-    //             let new_position = position as i8 + movement;
-    //             if new_position > 63 || new_position < 0 {
-    //                 continue;
-    //             }
-    //             if movement.abs() == 1 && (new_position / 8) != (position / 8) as i8 {
-    //                 continue;
-    //             }
-    //             else if movement.abs() != 1  && ((new_position / 8) - (position / 8) as i8).abs() != 1 {
-    //                 continue;
-    //             }
-    //             if let Some(piece) = &board[new_position as usize] {
-    //                 if piece.color != self.color {
-    //                     available_moves.push(movement);
-    //                 }
-    //                 continue;
-    //             }
-    //             available_moves.push(movement);
-    //         }
+        //Normal move logic
+        for (int movement: directions) {
+            int new_position = position + movement;
+            if (new_position > 63 || new_position < 0) {
+                continue;
+            }
+            if (std::abs(movement) == 1 && (new_position / 8) != (position / 8)) {
+                continue;
+            }
+            else if (std::abs(movement) != 1  && std::abs((new_position / 8) - (position / 8)) != 1) {
+                continue;
+            }
+            if (!board[new_position].has_value()) {
+                if ((*board[new_position]).color != this->color) {
+                    available_moves.push_back(movement);
+                }
+                continue;
+            }
+            available_moves.push_back(movement);
+        }
 
-    //         //Castling logic
-    //         if !self.has_moved {
-    //             if board[position + 1].is_none() && board[position + 2].is_none() {
-    //                 available_moves.push(2);
-    //             }
-    //             if board[position - 1].is_none() && board[position - 2].is_none() && board[position - 3].is_none() {
-    //                 available_moves.push(-2);
-    //             }
-    //         }
+        //Castling logic
+        if (!this->has_moved) {
+            if (!board[position + 1].has_value() && !board[position + 2].has_value()) {
+                available_moves.push_back(2);
+            }
+            if (!board[position - 1].has_value() && !board[position - 2].has_value() && !board[position - 3].has_value()) {
+                available_moves.push_back(-2);
+            }
+        }
 
-    //         available_moves
-    //     }
-    // };
-    // return moves;
+        return available_moves;
+    }
+
+    return moves;
 }

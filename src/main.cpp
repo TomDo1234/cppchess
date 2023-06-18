@@ -1,5 +1,6 @@
 #include <iostream>
 #include "piece.h"
+#include <optional>
 
 int main() {
   Piece WHITE_PAWN = Piece(Color::White,PieceType::Pawn,1U,false);
@@ -16,5 +17,6 @@ int main() {
   Piece BLACK_KING = Piece(Color::Black,PieceType::King,205U,false);
 
   std::cout << BLACK_QUEEN.color << std::endl;
+  
   return 0;
 }
