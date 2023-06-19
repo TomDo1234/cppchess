@@ -6,22 +6,20 @@ ZobristHash::ZobristHash() {
     std::random_device rng;
     std::mt19937_64 engine(rng()); // Mersenne Twister engine with 64-bit output
     std::uniform_int_distribution<uint64_t> dist; // Range of 64-bit unsigned integers
-    
+
     unsigned int zobrist_table[BOARD_SIZE][12];
 
-    // for i in 0..PIECES.len() {
-    //     for j in 0..BOARD_SIZE {
-    //         zobrist_table[i][j] = rng.gen::<u64>();
-    //     }
-    // }
+    for (int i = 0; i < 12 ; i++) {
+        for (int j = 0; j < BOARD_SIZE ; j++) {
+            zobrist_table[i][j] = dist(engine);
+        }
+    }
 
-    // let mut other_data_table = [0; 9];
-    // for i in 0..9 {
-    //     other_data_table[i] = rng.gen::<u64>();
-    // }
+    int other_data_table[9] = {0}; //9 0s in this array
+    for (int i = 0; i < 9 ; i++) {
+        other_data_table[i] = dist(engine);
+    }
 
-    // Self {
-    //     zobrist_table,
-    //     other_data_table
-    // }
+    this->zobrist_table = zobrist_table;
+    this->other_data_table = other_data_table;
 }
