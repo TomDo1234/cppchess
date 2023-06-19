@@ -11,12 +11,13 @@ class Piece {
     public:
         Color color;
         PieceType piece_type;
+        Piece();
         Piece(Color color,PieceType piece_type,unsigned int value,bool has_moved);
         std::vector<int> get_moves(std::optional<Piece> board[64]);
         std::tuple<int,unsigned int,std::array<std::optional<Piece>,64>> do_move(std::array<std::optional<Piece>,64> board,int movement);
+        bool has_moved;
     private:
         unsigned value; 
-        bool has_moved;
 };
 
 const Piece WHITE_PAWN = Piece(Color::White,PieceType::Pawn,1U,false);

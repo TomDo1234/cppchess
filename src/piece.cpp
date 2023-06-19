@@ -8,6 +8,10 @@ Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_mov
     this->has_moved = has_moved;
 }
 
+//Default constructor
+Piece::Piece() {
+}
+
 std::vector<int> Piece::get_moves(std::optional<Piece> board[64]) {
     int position = -1; //remains -1 if piece is not found;
 

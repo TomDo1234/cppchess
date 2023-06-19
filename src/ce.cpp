@@ -1,5 +1,6 @@
 #include "ce.h"
 #include "piece.h"
+#include <cctype>
 
 std::vector<std::string> split(std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -42,50 +43,40 @@ std::tuple<std::array<std::optional<Piece>,64>,int> parse_fen(std::string fen) {
                     }
                     offset += int_c - 1;
                 }
-                    // _ => {
-                    //     let piece: Option<Piece> = if c.is_uppercase() { 
-                    //         match c.to_ascii_lowercase() {
-                    //             'p' => Some(WHITE_PAWN),
-                    //             'r' => Some(WHITE_ROOK),
-                    //             'n' => Some(WHITE_KNIGHT),
-                    //             'b' => Some(WHITE_BISHOP),
-                    //             'q' => Some(WHITE_QUEEN),
-                    //             'k' => {
-                    //                 let mut king = WHITE_KING.clone();
-                    //                 if (rank * 8 + offset + index) % 8 == 4 {
-                    //                     Some(king)
-                    //                 }
-                    //                 else {
-                    //                     king.has_moved = true;
-                    //                     Some(king)
-                    //                 }
-                    //             },
-                    //             _ => panic!("Invalid character in FEN string {c}"),
-                    //         }
-                    //     }
-                    //     else { 
-                    //         match c.to_ascii_lowercase() {
-                    //             'p' => Some(BLACK_PAWN),
-                    //             'r' => Some(BLACK_ROOK),
-                    //             'n' => Some(BLACK_KNIGHT),
-                    //             'b' => Some(BLACK_BISHOP),
-                    //             'q' => Some(BLACK_QUEEN),
-                    //             'k' => {
-                    //                 let mut king = BLACK_KING.clone();
-                    //                 if rank * 8 + offset + index == 4 {
-                    //                     Some(king)
-                    //                 }
-                    //                 else {
-                    //                     king.has_moved = true;
-                    //                     Some(king)
-                    //                 }
-                    //             },
-                    //             _ => panic!("Invalid character in FEN string {c}"),
-                    //         }
-                    //     };
-                        
-                    //     board[rank * 8 + offset + index] = piece;
-                    // } 
+
+                std::optional<Piece> piece;
+
+                Piece king;
+
+                switch (std::toupper(c))
+                {
+                    case 'P':
+                        piece = std::isupper(c) ? WHITE_PAWN : BLACK_PAWN;
+                        break;
+                    case 'R':
+                        piece = std::isupper(c) ? WHITE_ROOK : BLACK_ROOK;
+                        break;
+                    case 'N':
+                        piece = std::isupper(c) ? WHITE_KNIGHT : BLACK_KNIGHT;
+                        break;
+                    case 'B':
+                        piece = std::isupper(c) ? WHITE_BISHOP : BLACK_BISHOP;
+                        break;
+                    case 'Q':
+                        piece = std::isupper(c) ? WHITE_QUEEN : BLACK_QUEEN;
+                        break;
+                    case 'K': 
+                        king = std::isupper(c) ? WHITE_KING : BLACK_KING;
+                        if (!((rank * 8 + offset + index) % 8 == 4)) {
+                            king.has_moved = true;
+                        }
+                        piece = king;
+                        break;  
+                    default:
+                        break;
+                }
+
+                board[rank * 8 + offset + index] = piece;
             }
         }
         offset = 0;
