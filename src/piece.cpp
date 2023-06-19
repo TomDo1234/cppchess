@@ -1,10 +1,4 @@
-#include "enums.h"
 #include "piece.h"
-#include <vector>
-#include <cstdlib>
-#include <optional>
-#include <tuple>
-#include <array>
 
 // Constructor implementation/definition
 Piece::Piece(Color color, PieceType piece_type, unsigned int value, bool has_moved) {

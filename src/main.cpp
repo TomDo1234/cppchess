@@ -1,5 +1,6 @@
 #include <iostream>
 #include "piece.h"
+#include "ce.h"
 #include <optional>
 
 int main() {
