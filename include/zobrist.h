@@ -9,4 +9,5 @@ class ZobristHash {
         unsigned int zobrist_table[BOARD_SIZE][12];
         unsigned int other_data_table[9];
         ZobristHash();
+        unsigned int hash(std::array<std::optional<Piece>,64> board,unsigned int current_recursion);
 };
