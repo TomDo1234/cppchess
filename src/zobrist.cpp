@@ -11,15 +11,12 @@ ZobristHash::ZobristHash() {
 
     for (int i = 0; i < 12 ; i++) {
         for (int j = 0; j < BOARD_SIZE ; j++) {
-            zobrist_table[i][j] = dist(engine);
+            this->zobrist_table[i][j] = dist(engine);
         }
     }
 
     int other_data_table[9] = {0}; //9 0s in this array
     for (int i = 0; i < 9 ; i++) {
-        other_data_table[i] = dist(engine);
+        this->other_data_table[i] = dist(engine);
     }
-
-    this->zobrist_table = zobrist_table;
-    this->other_data_table = other_data_table;
 }
