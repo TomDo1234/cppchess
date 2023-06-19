@@ -33,51 +33,49 @@ std::tuple<std::array<std::optional<Piece>,64>,int> parse_fen(std::string fen) {
     for (size_t rank = 0; rank < fen_board_rows.size(); rank++) {
         const std::string fen_rank = fen_board_rows[rank];
         for (size_t index = 0; index < fen_rank.size(); index++) {
-            for (size_t i = 0; i < fen_rank.size(); i++) {
-                const char c = fen_rank[i];
+            const char c = fen_rank[index];
 
-                if (c >= '1' && c <= '8') {
-                    int int_c = c - '0'; // - '0' just converts it to an int lol
-                    for (int i = 0; i < int_c; i++) { 
-                        board[rank * 8 + offset + index + i].reset();
-                    }
-                    offset += int_c - 1;
+            if (c >= '1' && c <= '8') {
+                int int_c = c - '0'; // - '0' just converts it to an int lol
+                for (int i = 0; i < int_c; i++) { 
+                    board[rank * 8 + offset + index + i].reset();
                 }
-
-                std::optional<Piece> piece;
-
-                Piece king;
-
-                switch (std::toupper(c))
-                {
-                    case 'P':
-                        piece = std::isupper(c) ? WHITE_PAWN : BLACK_PAWN;
-                        break;
-                    case 'R':
-                        piece = std::isupper(c) ? WHITE_ROOK : BLACK_ROOK;
-                        break;
-                    case 'N':
-                        piece = std::isupper(c) ? WHITE_KNIGHT : BLACK_KNIGHT;
-                        break;
-                    case 'B':
-                        piece = std::isupper(c) ? WHITE_BISHOP : BLACK_BISHOP;
-                        break;
-                    case 'Q':
-                        piece = std::isupper(c) ? WHITE_QUEEN : BLACK_QUEEN;
-                        break;
-                    case 'K': 
-                        king = std::isupper(c) ? WHITE_KING : BLACK_KING;
-                        if (!((rank * 8 + offset + index) % 8 == 4)) {
-                            king.has_moved = true;
-                        }
-                        piece = king;
-                        break;  
-                    default:
-                        break;
-                }
-
-                board[rank * 8 + offset + index] = piece;
+                offset += int_c - 1;
             }
+
+            std::optional<Piece> piece;
+
+            Piece king;
+
+            switch (std::toupper(c))
+            {
+                case 'P':
+                    piece = std::isupper(c) ? WHITE_PAWN : BLACK_PAWN;
+                    break;
+                case 'R':
+                    piece = std::isupper(c) ? WHITE_ROOK : BLACK_ROOK;
+                    break;
+                case 'N':
+                    piece = std::isupper(c) ? WHITE_KNIGHT : BLACK_KNIGHT;
+                    break;
+                case 'B':
+                    piece = std::isupper(c) ? WHITE_BISHOP : BLACK_BISHOP;
+                    break;
+                case 'Q':
+                    piece = std::isupper(c) ? WHITE_QUEEN : BLACK_QUEEN;
+                    break;
+                case 'K': 
+                    king = std::isupper(c) ? WHITE_KING : BLACK_KING;
+                    if (!((rank * 8 + offset + index) % 8 == 4)) {
+                        king.has_moved = true;
+                    }
+                    piece = king;
+                    break;  
+                default:
+                    break;
+            }
+
+            board[rank * 8 + offset + index] = piece;
         }
         offset = 0;
     }

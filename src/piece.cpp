@@ -235,3 +235,20 @@ std::tuple<int,unsigned int,std::array<std::optional<Piece>,64>> Piece::do_move(
 
     return std::make_tuple(position,piece_there_value,new_board);
 }
+
+char Piece::char_representation() {
+    switch (this->piece_type) {
+        case PieceType::Pawn:
+            return this->color == Color::White ? 'P' : 'p';
+        case PieceType::Knight:
+            return this->color == Color::White ? 'N' : 'n';
+        case PieceType::Bishop:
+            return this->color == Color::White ? 'B' : 'b';
+        case PieceType::Rook:
+            return this->color == Color::White ? 'R' : 'r';
+        case PieceType::Queen:
+            return this->color == Color::White ? 'Q' : 'q';
+        case PieceType::King:
+            return this->color == Color::White ? 'K' : 'k';
+    }
+}
