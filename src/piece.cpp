@@ -219,6 +219,7 @@ std::tuple<int,unsigned int,std::array<std::optional<Piece>,64>> Piece::do_move(
 
     new_board[new_position] = moved_piece;
 
+    //Castling Logic
     if (this->piece_type == PieceType::King) {
         if (movement == 2) {
             new_board[position + 1] = new_board[position + 3];

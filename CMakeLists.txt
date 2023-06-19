@@ -12,4 +12,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Add executable target with source files
-add_executable(MyChessApp src/main.cpp src/piece.cpp)
+add_executable(MyChessApp src/main.cpp src/piece.cpp src/ce.cpp)
